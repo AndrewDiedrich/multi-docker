@@ -8,7 +8,7 @@ before_install:
 
 # to run scripts after build
 script:
-  - docker run -e CI=true andrewdiedrich/react-react npm run test
+  - docker run -e CI=true andrewdiedrich/react-test npm run test
 
 # build container images
 after_success:
@@ -23,3 +23,15 @@ after_success:
   - docker push andrewdiedrich/multi-nginx
   - docker push andrewdiedrich/multi-server
   - docker push andrewdiedrich/multi-worker
+
+deploy:
+  provider: elesticbeanstalk
+  region: "us-east-1"
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: "elasticbeanstalk-us-east-1-094563180798"
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
